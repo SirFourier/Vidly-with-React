@@ -2,7 +2,7 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## About
-This is a project that I have slowly built up to learn react. This is based on exercises and lessons by codewithmosh.com through the mastering React course.
+This is a project that I have slowly built up to learn react. This is based on exercises and lessons by [Code with Mosh](http://codewithmosh.com) through the mastering React course. I have added my own features such as appending new movie components using user inputs.
 
 ## Available Scripts
 
