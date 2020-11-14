@@ -1,5 +1,6 @@
 import React from "react";
 import Like from "./common/like";
+import PropTypes from "prop-types";
 
 function Movie(props) {
   const { index, movie, onDelete, onLike } = props;
@@ -25,5 +26,12 @@ function Movie(props) {
     </tr>
   );
 }
+
+Movie.propTypes = {
+  index: PropTypes.number.isRequired,
+  movie: PropTypes.object.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onLike: PropTypes.func.isRequired,
+};
 
 export default Movie;
