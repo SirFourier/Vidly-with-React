@@ -2,10 +2,15 @@ import React, { Component } from "react";
 import { getMovies } from "../services/fakeMovieService";
 import Movie from "./movie";
 import NewMovie from "./newMovie";
+import Pagination from "./common/pagination";
 
 class Movies extends Component {
   state = {
-    movies: getMovies(),
+    movies: getMovies().map((movie) => {
+      // add like property
+      movie.like = false;
+      return movie;
+    }),
     newMovie: {
       _id: "",
       title: "",
@@ -14,16 +19,20 @@ class Movies extends Component {
       dailyRentalRate: "",
       like: false,
     },
+    maxMoviesPerPage: 4,
+    currentPage: 1,
   };
 
-  constructor() {
-    super();
-    this.state.movies = getMovies().map((movie) => {
-      // add like property
-      movie.like = false;
-      return movie;
+  handlePage = (page) => {
+    this.setState({ currentPage: page });
+  };
+
+  handleNumberOfPages = () => {
+    const { movies, maxMoviesPerPage } = this.state;
+    this.setState({
+      numberOfPages: Math.ceil(movies.length / maxMoviesPerPage),
     });
-  }
+  };
 
   handleDelete = (movie) => {
     let newMovies = this.state.movies.filter((m) => m._id !== movie._id);
@@ -38,9 +47,11 @@ class Movies extends Component {
     this.setState({
       movies: newMovies,
     });
+
+    this.handleNumberOfPages();
   };
 
-  handleChange = (event) => {
+  handleNewMovieChange = (event) => {
     const newMovie = { ...this.state.newMovie };
     const { id, value } = event.target;
     if (id === "genre") {
@@ -63,6 +74,8 @@ class Movies extends Component {
     newMovies.push(newMovie);
     this.setState({ movies: newMovies });
 
+    this.handleNumberOfPages();
+
     // In the future. We may want to call backend server to update moveies.
   };
 
@@ -81,9 +94,12 @@ class Movies extends Component {
   };
 
   render() {
+    const { movies, maxMoviesPerPage, currentPage, newMovie } = this.state;
+    const count = movies.length;
+    const firstMovieIndex = (currentPage - 1) * maxMoviesPerPage;
     return (
       <>
-        <p>There are {this.state.movies.length} movies in the database.</p>
+        <p>There are {count} movies in the database.</p>
         <table className="table">
           <thead>
             <tr>
@@ -97,23 +113,31 @@ class Movies extends Component {
             </tr>
           </thead>
           <tbody>
-            {this.state.movies.map((movie, index) => (
-              <Movie
-                key={movie._id}
-                movie={movie}
-                onDelete={this.handleDelete}
-                onLike={this.handleLike}
-                index={index}
-              ></Movie>
-            ))}
+            {movies
+              .slice(firstMovieIndex, firstMovieIndex + maxMoviesPerPage)
+              .map((movie, index) => (
+                <Movie
+                  key={movie._id}
+                  movie={movie}
+                  onDelete={this.handleDelete}
+                  onLike={this.handleLike}
+                  index={index + firstMovieIndex}
+                ></Movie>
+              ))}
             <NewMovie
-              onChange={this.handleChange}
+              onChange={this.handleNewMovieChange}
               onAdd={this.handleAdd}
-              newMovie={this.state.newMovie}
+              newMovie={newMovie}
               onLike={this.handleLike}
             ></NewMovie>
           </tbody>
         </table>
+        <Pagination
+          totalItems={count}
+          itemsPerPage={maxMoviesPerPage}
+          currentPage={currentPage}
+          onPage={this.handlePage}
+        />
       </>
     );
   }

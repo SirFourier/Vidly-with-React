@@ -1,5 +1,5 @@
 import React from "react";
-import Like from "./like";
+import Like from "./common/like";
 
 function Movie(props) {
   const { index, movie, onDelete, onLike } = props;
