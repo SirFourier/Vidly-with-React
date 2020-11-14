@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 function Like(props) {
   const { movie, onLike } = props;
@@ -13,5 +14,10 @@ function Like(props) {
     ></i>
   );
 }
+
+Like.propTypes = {
+  movie: PropTypes.object.isRequired,
+  onLike: PropTypes.func.isRequired,
+};
 
 export default Like;

@@ -1,7 +1,8 @@
 import React from "react";
 import Like from "./common/like";
+import PropTypes from "prop-types";
 
-function Movie(props) {
+function NewMovie(props) {
   const { onChange, onAdd, onLike, newMovie } = props;
   return (
     <tr>
@@ -50,4 +51,11 @@ function Movie(props) {
   );
 }
 
-export default Movie;
+NewMovie.propTypes = {
+  onChange: PropTypes.func.isRequired,
+  onAdd: PropTypes.func.isRequired,
+  onLike: PropTypes.func.isRequired,
+  newMovie: PropTypes.object.isRequired,
+};
+
+export default NewMovie;

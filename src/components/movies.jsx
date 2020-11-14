@@ -3,6 +3,7 @@ import { getMovies } from "../services/fakeMovieService";
 import Movie from "./movie";
 import NewMovie from "./newMovie";
 import Pagination from "./common/pagination";
+import paginate from "../utils/paginate";
 
 class Movies extends Component {
   state = {
@@ -19,7 +20,7 @@ class Movies extends Component {
       dailyRentalRate: "",
       like: false,
     },
-    maxMoviesPerPage: 4,
+    maxMoviesPerPage: 2,
     currentPage: 1,
   };
 
@@ -96,7 +97,7 @@ class Movies extends Component {
   render() {
     const { movies, maxMoviesPerPage, currentPage, newMovie } = this.state;
     const count = movies.length;
-    const firstMovieIndex = (currentPage - 1) * maxMoviesPerPage;
+    const {items: paginatedMovies, firstIndex} = paginate(movies, currentPage, maxMoviesPerPage);
     return (
       <>
         <p>There are {count} movies in the database.</p>
@@ -113,17 +114,15 @@ class Movies extends Component {
             </tr>
           </thead>
           <tbody>
-            {movies
-              .slice(firstMovieIndex, firstMovieIndex + maxMoviesPerPage)
-              .map((movie, index) => (
-                <Movie
-                  key={movie._id}
-                  movie={movie}
-                  onDelete={this.handleDelete}
-                  onLike={this.handleLike}
-                  index={index + firstMovieIndex}
-                ></Movie>
-              ))}
+            {paginatedMovies.map((movie, index) => (
+              <Movie
+                key={movie._id}
+                movie={movie}
+                onDelete={this.handleDelete}
+                onLike={this.handleLike}
+                index={firstIndex + index}
+              ></Movie>
+            ))}
             <NewMovie
               onChange={this.handleNewMovieChange}
               onAdd={this.handleAdd}
