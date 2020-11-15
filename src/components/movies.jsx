@@ -1,17 +1,15 @@
 import React, { Component } from "react";
 import { getMovies } from "../services/fakeMovieService";
-import Movie from "./movie";
-import NewMovie from "./newMovie";
+import { getGenres } from "../services/fakeGenreService";
+import MoviesTable from "./moviesTable";
 import Pagination from "./common/pagination";
 import paginate from "../utils/paginate";
+import ListGroup from "./common/listGroup";
 
 class Movies extends Component {
   state = {
-    movies: getMovies().map((movie) => {
-      // add like property
-      movie.like = false;
-      return movie;
-    }),
+    movies: [],
+    genres: [],
     newMovie: {
       _id: "",
       title: "",
@@ -20,19 +18,28 @@ class Movies extends Component {
       dailyRentalRate: "",
       like: false,
     },
-    maxMoviesPerPage: 2,
+    maxMoviesPerPage: 4,
     currentPage: 1,
+  };
+
+  componentDidMount() {
+    const movies = getMovies().map((movie) => {
+      // add like property
+      movie.like = false;
+      return movie;
+    });
+    const allGenres = { _id: "", name: "All Genres" };
+    const genres = [allGenres, ...getGenres()];
+
+    this.setState({ movies, genres, currentGenre: allGenres });
+  }
+
+  handleGenreChange = (genre) => {
+    this.setState({ currentGenre: genre, currentPage: 1 });
   };
 
   handlePage = (page) => {
     this.setState({ currentPage: page });
-  };
-
-  handleNumberOfPages = () => {
-    const { movies, maxMoviesPerPage } = this.state;
-    this.setState({
-      numberOfPages: Math.ceil(movies.length / maxMoviesPerPage),
-    });
   };
 
   handleDelete = (movie) => {
@@ -48,8 +55,6 @@ class Movies extends Component {
     this.setState({
       movies: newMovies,
     });
-
-    this.handleNumberOfPages();
   };
 
   handleNewMovieChange = (event) => {
@@ -75,8 +80,6 @@ class Movies extends Component {
     newMovies.push(newMovie);
     this.setState({ movies: newMovies });
 
-    this.handleNumberOfPages();
-
     // In the future. We may want to call backend server to update moveies.
   };
 
@@ -94,50 +97,58 @@ class Movies extends Component {
     // In the future. We may want to call backend server to update moveies.
   };
 
+  handleSort = (path) => {
+    console.log(path);
+  };
+
   render() {
-    const { movies, maxMoviesPerPage, currentPage, newMovie } = this.state;
-    const count = movies.length;
-    const {items: paginatedMovies, firstIndex} = paginate(movies, currentPage, maxMoviesPerPage);
+    const {
+      movies,
+      maxMoviesPerPage,
+      currentPage,
+      newMovie,
+      genres,
+      currentGenre,
+    } = this.state;
+    const filteredMovies =
+      currentGenre && currentGenre._id
+        ? movies.filter((movie) => movie.genre.name === currentGenre.name)
+        : movies;
+    const { items: paginatedMovies, firstIndex } = paginate(
+      filteredMovies,
+      currentPage,
+      maxMoviesPerPage
+    );
     return (
-      <>
-        <p>There are {count} movies in the database.</p>
-        <table className="table">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Title</th>
-              <th scope="col">Genre</th>
-              <th scope="col">Stock</th>
-              <th scope="col">Rate</th>
-              <th scope="col">Like</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedMovies.map((movie, index) => (
-              <Movie
-                key={movie._id}
-                movie={movie}
-                onDelete={this.handleDelete}
-                onLike={this.handleLike}
-                index={firstIndex + index}
-              ></Movie>
-            ))}
-            <NewMovie
-              onChange={this.handleNewMovieChange}
-              onAdd={this.handleAdd}
-              newMovie={newMovie}
-              onLike={this.handleLike}
-            ></NewMovie>
-          </tbody>
-        </table>
-        <Pagination
-          totalItems={count}
-          itemsPerPage={maxMoviesPerPage}
-          currentPage={currentPage}
-          onPage={this.handlePage}
-        />
-      </>
+      <div className="row">
+        {/* Note that col-2 takes 2 / 12 available spaces while col just takes remaining amount */}
+        <div className="col-2">
+          <ListGroup
+            items={genres}
+            activeItem={currentGenre}
+            onItemChange={this.handleGenreChange}
+          />
+        </div>
+        <div className="col">
+          <p>There are {filteredMovies.length} movies in the database.</p>
+          <MoviesTable
+            paginatedMovies={paginatedMovies}
+            firstIndex={firstIndex}
+            newMovie={newMovie}
+            onDelete={this.handleDelete}
+            onLike={this.handleLike}
+            onNewMovieChange={this.handleNewMovieChange}
+            onAdd={this.handleAdd}
+            onSort={this.handleSort}
+          />
+          <Pagination
+            totalItems={filteredMovies.length}
+            itemsPerPage={maxMoviesPerPage}
+            currentPage={currentPage}
+            onPage={this.handlePage}
+          />
+        </div>
+      </div>
     );
   }
 }
