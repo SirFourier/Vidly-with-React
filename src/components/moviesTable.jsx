@@ -1,49 +1,59 @@
-import React from "react";
+import React, { Component } from "react";
+import TableHeader from "./common/tableHeader";
 import Movie from "./movie";
-import NewMovie from "./newMovie";
+import PropTypes from "prop-types";
 
-function MoviesTable({
-  paginatedMovies,
-  firstIndex,
-  newMovie,
-  onDelete,
-  onLike,
-  onNewMovieChange,
-  onAdd,
-  onSort,
-}) {
-  return (
-    <table className="table">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th onClick={() => onSort("title")} scope="col">Title</th>
-          <th onClick={() => onSort("genre.name")} scope="col">Genre</th>
-          <th onClick={() => onSort("numberInStock")} scope="col">Stock</th>
-          <th onClick={() => onSort("dailyRentalRate")} scope="col">Rate</th>
-          <th scope="col">Like</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {paginatedMovies.map((movie, index) => (
-          <Movie
-            key={movie._id}
-            movie={movie}
-            onDelete={onDelete}
-            onLike={onLike}
-            index={firstIndex + index}
-          ></Movie>
-        ))}
-        <NewMovie
-          onChange={onNewMovieChange}
-          onAdd={onAdd}
-          newMovie={newMovie}
-          onLike={onLike}
-        ></NewMovie>
-      </tbody>
-    </table>
-  );
+class MoviesTable extends Component {
+  columns = [
+    { key: "number" },
+    { path: "title", label: "Title" },
+    { path: "genre.name", label: "Genre" },
+    { path: "numberInStock", label: "Stock" },
+    { path: "dailyRentalRate", label: "Rate" },
+    { key: "like" },
+    { key: "delete" },
+  ];
+
+  render() {
+    const {
+      paginatedMovies,
+      firstIndex,
+      onDelete,
+      onLike,
+      onSort,
+      sortColumn,
+    } = this.props;
+
+    return (
+      <table className="table">
+        <TableHeader
+          columns={this.columns}
+          sortColumn={sortColumn}
+          onSort={onSort}
+        ></TableHeader>
+        <tbody>
+          {paginatedMovies.map((movie, index) => (
+            <Movie
+              key={movie._id}
+              movie={movie}
+              onDelete={onDelete}
+              onLike={onLike}
+              index={firstIndex + index}
+            ></Movie>
+          ))}
+        </tbody>
+      </table>
+    );
+  }
 }
+
+MoviesTable.propTypes = {
+  paginatedMovies: PropTypes.array.isRequired,
+  firstIndex: PropTypes.number.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onLike: PropTypes.func.isRequired,
+  onSort: PropTypes.func.isRequired,
+  sortColumn: PropTypes.object.isRequired,
+};
 
 export default MoviesTable;

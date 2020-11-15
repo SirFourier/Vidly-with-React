@@ -5,21 +5,15 @@ import MoviesTable from "./moviesTable";
 import Pagination from "./common/pagination";
 import paginate from "../utils/paginate";
 import ListGroup from "./common/listGroup";
+import _ from "lodash";
 
 class Movies extends Component {
   state = {
     movies: [],
     genres: [],
-    newMovie: {
-      _id: "",
-      title: "",
-      genre: { _id: "", name: "" },
-      numberInStock: "",
-      dailyRentalRate: "",
-      like: false,
-    },
     maxMoviesPerPage: 4,
     currentPage: 1,
+    sortColumn: { path: "title", order: "asc" },
   };
 
   componentDidMount() {
@@ -52,35 +46,7 @@ class Movies extends Component {
       return movie;
     });
 
-    this.setState({
-      movies: newMovies,
-    });
-  };
-
-  handleNewMovieChange = (event) => {
-    const newMovie = { ...this.state.newMovie };
-    const { id, value } = event.target;
-    if (id === "genre") {
-      newMovie["genre"].name = value;
-    } else {
-      newMovie[id] = value;
-    }
-    this.setState({ newMovie: newMovie });
-  };
-
-  handleAdd = () => {
-    // create new id based on index
-    const new_id = this.state.movies.length + 1;
-    const newMovie = { ...this.state.newMovie };
-    newMovie._id = new_id;
-    newMovie.genre._id = new_id;
-
-    // hard copy movies and set new movies
-    const newMovies = [...this.state.movies];
-    newMovies.push(newMovie);
     this.setState({ movies: newMovies });
-
-    // In the future. We may want to call backend server to update moveies.
   };
 
   handleLike = (movie) => {
@@ -97,8 +63,8 @@ class Movies extends Component {
     // In the future. We may want to call backend server to update moveies.
   };
 
-  handleSort = (path) => {
-    console.log(path);
+  handleSort = (sortColumn) => {
+    this.setState({ sortColumn });
   };
 
   render() {
@@ -106,19 +72,28 @@ class Movies extends Component {
       movies,
       maxMoviesPerPage,
       currentPage,
-      newMovie,
       genres,
       currentGenre,
+      sortColumn,
     } = this.state;
+
     const filteredMovies =
       currentGenre && currentGenre._id
         ? movies.filter((movie) => movie.genre.name === currentGenre.name)
         : movies;
-    const { items: paginatedMovies, firstIndex } = paginate(
+
+    const sortedMovies = _.orderBy(
       filteredMovies,
+      [sortColumn.path],
+      [sortColumn.order]
+    );
+
+    const { items: paginatedMovies, firstIndex } = paginate(
+      sortedMovies,
       currentPage,
       maxMoviesPerPage
     );
+
     return (
       <div className="row">
         {/* Note that col-2 takes 2 / 12 available spaces while col just takes remaining amount */}
@@ -133,12 +108,10 @@ class Movies extends Component {
           <p>There are {filteredMovies.length} movies in the database.</p>
           <MoviesTable
             paginatedMovies={paginatedMovies}
+            sortColumn={sortColumn}
             firstIndex={firstIndex}
-            newMovie={newMovie}
             onDelete={this.handleDelete}
             onLike={this.handleLike}
-            onNewMovieChange={this.handleNewMovieChange}
-            onAdd={this.handleAdd}
             onSort={this.handleSort}
           />
           <Pagination

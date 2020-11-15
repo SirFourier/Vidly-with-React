@@ -2,6 +2,32 @@ import React from "react";
 import Like from "./common/like";
 import PropTypes from "prop-types";
 
+// handleNewMovieChange = (event) => {
+//   const newMovie = { ...this.state.newMovie };
+//   const { id, value } = event.target;
+//   if (id === "genre") {
+//     newMovie["genre"].name = value;
+//   } else {
+//     newMovie[id] = value;
+//   }
+//   this.setState({ newMovie: newMovie });
+// };
+
+// handleAdd = () => {
+//   // create new id based on index
+//   const new_id = this.state.movies.length + 1;
+//   const newMovie = { ...this.state.newMovie };
+//   newMovie._id = new_id;
+//   newMovie.genre._id = new_id;
+
+//   // hard copy movies and set new movies
+//   const newMovies = [...this.state.movies];
+//   newMovies.push(newMovie);
+//   this.setState({ movies: newMovies });
+
+//   // In the future. We may want to call backend server to update moveies.
+// };
+
 function NewMovie(props) {
   const { onChange, onAdd, onLike, newMovie } = props;
   return (
