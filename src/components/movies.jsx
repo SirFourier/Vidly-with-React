@@ -67,12 +67,11 @@ class Movies extends Component {
     this.setState({ sortColumn });
   };
 
-  render() {
+  getPagedData = () => {
     const {
       movies,
       maxMoviesPerPage,
       currentPage,
-      genres,
       currentGenre,
       sortColumn,
     } = this.state;
@@ -94,6 +93,20 @@ class Movies extends Component {
       maxMoviesPerPage
     );
 
+    return { paginatedMovies, totalCount: filteredMovies.length };
+  };
+
+  render() {
+    const {
+      maxMoviesPerPage,
+      currentPage,
+      genres,
+      currentGenre,
+      sortColumn,
+    } = this.state;
+
+    const { paginatedMovies, totalCount } = this.getPagedData();
+
     return (
       <div className="row">
         {/* Note that col-2 takes 2 / 12 available spaces while col just takes remaining amount */}
@@ -105,7 +118,7 @@ class Movies extends Component {
           />
         </div>
         <div className="col">
-          <p>There are {filteredMovies.length} movies in the database.</p>
+          <p>There are {totalCount} movies in the database.</p>
           <MoviesTable
             paginatedMovies={paginatedMovies}
             sortColumn={sortColumn}
@@ -114,7 +127,7 @@ class Movies extends Component {
             onSort={this.handleSort}
           />
           <Pagination
-            totalItems={filteredMovies.length}
+            totalItems={totalCount}
             itemsPerPage={maxMoviesPerPage}
             currentPage={currentPage}
             onPage={this.handlePage}
