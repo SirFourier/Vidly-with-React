@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import TableHeader from "./common/tableHeader";
-import TableBody from "./common/tableBody";
+import Table from "./common/table";
 import Like from "./common/like";
 import PropTypes from "prop-types";
 
@@ -30,24 +29,15 @@ class MoviesTable extends Component {
   ];
 
   render() {
-    const {
-      paginatedMovies,
-      onSort,
-      sortColumn,
-    } = this.props;
+    const { paginatedMovies, onSort, sortColumn } = this.props;
 
     return (
-      <table className="table">
-        <TableHeader
-          columns={this.columns}
-          sortColumn={sortColumn}
-          onSort={onSort}
-        ></TableHeader>
-        <TableBody
-          items={paginatedMovies}
-          columns={this.columns}
-        />
-      </table>
+      <Table
+        items={paginatedMovies}
+        columns={this.columns}
+        sortColumn={sortColumn}
+        onSort={onSort}
+      />
     );
   }
 }
