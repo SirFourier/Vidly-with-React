@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 function ListGroup({ items, activeItem, onItemChange }) {
   return (
-    <ul className="list-group">
+    <ul className="list-group clickable">
       {items.map((item) => (
         <li
           key={item._id}
