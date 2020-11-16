@@ -1,25 +1,37 @@
 import React, { Component } from "react";
 import TableHeader from "./common/tableHeader";
-import Movie from "./movie";
+import TableBody from "./common/tableBody";
+import Like from "./common/like";
 import PropTypes from "prop-types";
 
 class MoviesTable extends Component {
   columns = [
-    { key: "number" },
     { path: "title", label: "Title" },
     { path: "genre.name", label: "Genre" },
     { path: "numberInStock", label: "Stock" },
     { path: "dailyRentalRate", label: "Rate" },
-    { key: "like" },
-    { key: "delete" },
+    {
+      key: "like",
+      content: (movie) => (
+        <Like movie={movie} onLike={this.props.onLike}></Like>
+      ),
+    },
+    {
+      key: "delete",
+      content: (movie) => (
+        <button
+          className="btn btn-danger btn-sm"
+          onClick={() => this.props.onDelete(movie)}
+        >
+          Delete
+        </button>
+      ),
+    },
   ];
 
   render() {
     const {
       paginatedMovies,
-      firstIndex,
-      onDelete,
-      onLike,
       onSort,
       sortColumn,
     } = this.props;
@@ -31,17 +43,10 @@ class MoviesTable extends Component {
           sortColumn={sortColumn}
           onSort={onSort}
         ></TableHeader>
-        <tbody>
-          {paginatedMovies.map((movie, index) => (
-            <Movie
-              key={movie._id}
-              movie={movie}
-              onDelete={onDelete}
-              onLike={onLike}
-              index={firstIndex + index}
-            ></Movie>
-          ))}
-        </tbody>
+        <TableBody
+          items={paginatedMovies}
+          columns={this.columns}
+        />
       </table>
     );
   }
@@ -49,7 +54,6 @@ class MoviesTable extends Component {
 
 MoviesTable.propTypes = {
   paginatedMovies: PropTypes.array.isRequired,
-  firstIndex: PropTypes.number.isRequired,
   onDelete: PropTypes.func.isRequired,
   onLike: PropTypes.func.isRequired,
   onSort: PropTypes.func.isRequired,

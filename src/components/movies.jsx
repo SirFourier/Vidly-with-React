@@ -88,7 +88,7 @@ class Movies extends Component {
       [sortColumn.order]
     );
 
-    const { items: paginatedMovies, firstIndex } = paginate(
+    const { items: paginatedMovies } = paginate(
       sortedMovies,
       currentPage,
       maxMoviesPerPage
@@ -109,7 +109,6 @@ class Movies extends Component {
           <MoviesTable
             paginatedMovies={paginatedMovies}
             sortColumn={sortColumn}
-            firstIndex={firstIndex}
             onDelete={this.handleDelete}
             onLike={this.handleLike}
             onSort={this.handleSort}
