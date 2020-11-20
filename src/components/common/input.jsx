@@ -17,7 +17,7 @@ Input.propTypes = {
   error: PropTypes.string,
   type: PropTypes.string.isRequired,
   autoFocus: PropTypes.bool.isRequired,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onChange: PropTypes.func.isRequired,
 };
 
