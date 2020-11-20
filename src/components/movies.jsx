@@ -6,15 +6,18 @@ import MoviesTable from "./moviesTable";
 import Pagination from "./common/pagination";
 import paginate from "../utils/paginate";
 import ListGroup from "./common/listGroup";
+import SearchBox from "./common/searchBox";
 import _ from "lodash";
 
 class Movies extends Component {
   state = {
     movies: [],
-    genres: [],
+    genres: [{ _id: "", name: "All Genres" }],
     maxMoviesPerPage: 4,
     currentPage: 1,
     sortColumn: { path: "title", order: "asc" },
+    selectedGenre: {},
+    searchString: "",
   };
 
   componentDidMount() {
@@ -23,14 +26,17 @@ class Movies extends Component {
       movie.like = false;
       return movie;
     });
-    const allGenres = { _id: "", name: "All Genres" };
-    const genres = [allGenres, ...getGenres()];
+    const genres = [...this.state.genres, ...getGenres()];
 
-    this.setState({ movies, genres, currentGenre: allGenres });
+    this.setState({ movies, genres, selectedGenre: genres[0] });
   }
 
   handleGenreChange = (genre) => {
-    this.setState({ currentGenre: genre, currentPage: 1 });
+    this.setState({ selectedGenre: genre, currentPage: 1, searchString: "" });
+  };
+
+  handleSearchChange = (query) => {
+    this.setState({ searchString: query, currentPage: 1, selectedGenre: {} });
   };
 
   handlePage = (page) => {
@@ -39,13 +45,6 @@ class Movies extends Component {
 
   handleDelete = (movie) => {
     let newMovies = this.state.movies.filter((m) => m._id !== movie._id);
-
-    // asign new id
-    newMovies = newMovies.map((movie, index) => {
-      movie._id = index;
-      movie.genre._id = index;
-      return movie;
-    });
 
     // delete movie from server
     deleteMovie(movie._id);
@@ -76,17 +75,23 @@ class Movies extends Component {
       movies,
       maxMoviesPerPage,
       currentPage,
-      currentGenre,
+      selectedGenre,
       sortColumn,
+      searchString,
     } = this.state;
 
     const filteredMovies =
-      currentGenre && currentGenre._id
-        ? movies.filter((movie) => movie.genre.name === currentGenre.name)
+      selectedGenre && selectedGenre._id && !searchString
+        ? movies.filter((movie) => movie.genre.name === selectedGenre.name)
         : movies;
 
+    const search = new RegExp(searchString, "i");
+    const searchedMovies = searchString
+      ? filteredMovies.filter((movie) => !movie.title.search(search))
+      : filteredMovies;
+
     const sortedMovies = _.orderBy(
-      filteredMovies,
+      searchedMovies,
       [sortColumn.path],
       [sortColumn.order]
     );
@@ -97,7 +102,7 @@ class Movies extends Component {
       maxMoviesPerPage
     );
 
-    return { paginatedMovies, totalCount: filteredMovies.length };
+    return { paginatedMovies, totalCount: sortedMovies.length };
   };
 
   render() {
@@ -105,8 +110,9 @@ class Movies extends Component {
       maxMoviesPerPage,
       currentPage,
       genres,
-      currentGenre,
+      selectedGenre,
       sortColumn,
+      searchString,
     } = this.state;
 
     const { paginatedMovies, totalCount } = this.getPagedData();
@@ -117,15 +123,20 @@ class Movies extends Component {
         <div className="col-2">
           <ListGroup
             items={genres}
-            activeItem={currentGenre}
+            activeItem={selectedGenre}
             onItemChange={this.handleGenreChange}
           />
         </div>
         <div className="col">
-          <Link className="btn btn-primary m-3" to="/movies/new">
+          <Link
+            className="btn btn-primary"
+            style={{ marginBottom: 20 }}
+            to="/movies/new"
+          >
             New Movie
           </Link>
-          <p>There are {totalCount} movies in the database.</p>
+          <h5>There are {totalCount} movies in the database.</h5>
+          <SearchBox value={searchString} onChange={this.handleSearchChange} />
           <MoviesTable
             paginatedMovies={paginatedMovies}
             sortColumn={sortColumn}
