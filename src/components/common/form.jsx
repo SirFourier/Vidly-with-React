@@ -59,12 +59,12 @@ class Form extends Component {
     const { data, errors } = this.state;
     return (
       <Input
-        type={type}
         autoFocus={autoFocus}
         name={name}
-        value={data[name]}
         label={label}
         onChange={this.handleChange}
+        type={type}
+        value={data[name]}
         error={errors[name]}
       />
     );
