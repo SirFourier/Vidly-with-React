@@ -21,7 +21,7 @@ function ListGroup({ items, activeItem, onItemChange }) {
 
 ListGroup.propTypes = {
   items: PropTypes.array.isRequired,
-//   activeItem: PropTypes.object.isRequired,
+  activeItem: PropTypes.object,
   onItemChange: PropTypes.func.isRequired,
 };
 
