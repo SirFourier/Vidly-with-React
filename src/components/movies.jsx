@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { getMovies } from "../services/fakeMovieService";
+import { getMovies, deleteMovie } from "../services/fakeMovieService";
 import { getGenres } from "../services/fakeGenreService";
 import MoviesTable from "./moviesTable";
 import Pagination from "./common/pagination";
@@ -46,6 +46,9 @@ class Movies extends Component {
       movie.genre._id = index;
       return movie;
     });
+
+    // delete movie from server
+    deleteMovie(movie._id);
 
     this.setState({ movies: newMovies });
   };
