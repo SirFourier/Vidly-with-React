@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-function Input({ name, label, options, error, ...rest }) {
+function Select({ name, label, options, error, ...rest }) {
   return (
     <div className="form-group">
       <label htmlFor={name}>{label}</label>
@@ -23,13 +23,12 @@ function Input({ name, label, options, error, ...rest }) {
   );
 }
 
-Input.propTypes = {
+Select.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   error: PropTypes.string,
-  type: PropTypes.string.isRequired,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onChange: PropTypes.func.isRequired,
 };
 
-export default Input;
+export default Select;
