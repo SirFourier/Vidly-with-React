@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { getMovies, deleteMovie } from "../services/fakeMovieService";
-import { getGenres } from "../services/fakeGenreService";
+import { toast } from "react-toastify";
+// import { getMovies, deleteMovie } from "../services/fakeMovieService";
+// import { getGenres } from "../services/fakeGenreService";
+import { getMovies, deleteMovie } from "../services/movieService";
+import { getGenres } from "../services/genreService";
 import MoviesTable from "./moviesTable";
 import Pagination from "./common/pagination";
 import paginate from "../utils/paginate";
@@ -12,7 +15,7 @@ import _ from "lodash";
 class Movies extends Component {
   state = {
     movies: [],
-    genres: [{ _id: "", name: "All Genres" }],
+    genres: [],
     maxMoviesPerPage: 4,
     currentPage: 1,
     sortColumn: { path: "title", order: "asc" },
@@ -20,14 +23,17 @@ class Movies extends Component {
     searchString: "",
   };
 
-  componentDidMount() {
-    const movies = getMovies().map((movie) => {
+  async componentDidMount() {
+    const { data: movieData } = await getMovies();
+
+    const movies = movieData.map((movie) => {
       // add like property
       movie.like = false;
       return movie;
     });
-    const genres = [...this.state.genres, ...getGenres()];
 
+    const { data: genreData } = await getGenres();
+    const genres = [{ _id: "", name: "All Genres" }, ...genreData];
     this.setState({ movies, genres, selectedGenre: genres[0] });
   }
 
@@ -43,13 +49,20 @@ class Movies extends Component {
     this.setState({ currentPage: page });
   };
 
-  handleDelete = (movie) => {
-    let newMovies = this.state.movies.filter((m) => m._id !== movie._id);
-
-    // delete movie from server
-    deleteMovie(movie._id);
-
+  handleDelete = async (movie) => {
+    // optimistic update
+    const originalMovies = this.state.movies;
+    let newMovies = originalMovies.filter((m) => m._id !== movie._id);
     this.setState({ movies: newMovies });
+
+    try {
+      await deleteMovie(movie._id);
+    } catch (ex) {
+      if (ex.response && ex.response.status === 404) {
+        toast.error("This movie has already been deleted.");
+      }
+      this.setState({ movies: originalMovies });
+    }
   };
 
   handleLike = (movie) => {
@@ -138,7 +151,7 @@ class Movies extends Component {
           <h5>There are {totalCount} movies in the database.</h5>
           <SearchBox value={searchString} onChange={this.handleSearchChange} />
           <MoviesTable
-            paginatedMovies={paginatedMovies}
+            movies={paginatedMovies}
             sortColumn={sortColumn}
             onDelete={this.handleDelete}
             onLike={this.handleLike}
