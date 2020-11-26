@@ -1,4 +1,6 @@
+import React from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import Navbar from "./components/navbar";
 import Movies from "./components/movies";
 import Customers from "./components/customers";
@@ -12,6 +14,7 @@ import "./App.css";
 function App() {
   return (
     <>
+      <ToastContainer />
       <Navbar />
       <main className="container">
         <Switch>
@@ -21,6 +24,7 @@ function App() {
           <Route path="/rentals" component={Rentals} />
           <Route path="/login" component={LoginForm} />
           <Route path="/register" component={RegisterForm} />
+          <Route path="/not-found" component={NotFound} />
           <Redirect from="/" exact to="/movies" component={Movies} />
           <Redirect to="/not-found" component={NotFound} />
         </Switch>
