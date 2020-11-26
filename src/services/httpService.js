@@ -6,7 +6,6 @@ axios.interceptors.response.use(null, (error) => {
   // Unexpected errors (network down, server down, db down, bug)
   // log - them
   // Display a generic and friendly error message
-  console.log(error);
   const expectedError =
     error.response &&
     error.response.status >= 400 &&
