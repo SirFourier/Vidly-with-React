@@ -36,11 +36,11 @@ class MoviesTable extends Component {
   ];
 
   render() {
-    const { paginatedMovies, onSort, sortColumn } = this.props;
+    const { movies, onSort, sortColumn } = this.props;
 
     return (
       <Table
-        items={paginatedMovies}
+        items={movies}
         columns={this.columns}
         sortColumn={sortColumn}
         onSort={onSort}
@@ -50,7 +50,7 @@ class MoviesTable extends Component {
 }
 
 MoviesTable.propTypes = {
-  paginatedMovies: PropTypes.array.isRequired,
+  movies: PropTypes.array.isRequired,
   onDelete: PropTypes.func.isRequired,
   onLike: PropTypes.func.isRequired,
   onSort: PropTypes.func.isRequired,
