@@ -1,9 +1,8 @@
 // backend service for movies
 
 import http from "./httpService";
-import config from "../config.json";
 
-const apiEndpoint = `${config.apiUrl}/movies`;
+const apiEndpoint = `/movies`;
 
 function movieUrl(_id) {
   return `${apiEndpoint}/${_id}`;
