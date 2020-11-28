@@ -127,6 +127,7 @@ class Movies extends Component {
       sortColumn,
       searchString,
     } = this.state;
+    const { user } = this.props;
 
     const { paginatedMovies, totalCount } = this.getPagedData();
 
@@ -141,13 +142,15 @@ class Movies extends Component {
           />
         </div>
         <div className="col">
-          <Link
-            className="btn btn-primary"
-            style={{ marginBottom: 20 }}
-            to="/movies/new"
-          >
-            New Movie
-          </Link>
+          {user && (
+            <Link
+              className="btn btn-primary"
+              style={{ marginBottom: 20 }}
+              to="/movies/new"
+            >
+              New Movie
+            </Link>
+          )}
           <h5>There are {totalCount} movies in the database.</h5>
           <SearchBox value={searchString} onChange={this.handleSearchChange} />
           <MoviesTable
