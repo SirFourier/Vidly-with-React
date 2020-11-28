@@ -60,7 +60,8 @@ class Movies extends Component {
     } catch (ex) {
       if (ex.response && ex.response.status === 404) {
         toast.error("This movie has already been deleted.");
-      }
+      } else if (ex.response && ex.response.status === 403)
+        toast.error(`${ex.response.data} Requires admin privileges.`);
       this.setState({ movies: originalMovies });
     }
   };
