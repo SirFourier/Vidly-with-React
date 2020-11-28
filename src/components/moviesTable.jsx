@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import auth from "../services/authService";
 import Table from "./common/table";
 import Like from "./common/like";
 import PropTypes from "prop-types";
@@ -24,14 +25,16 @@ class MoviesTable extends Component {
     },
     {
       key: "delete",
-      content: (movie) => (
-        <button
-          className="btn btn-danger btn-sm"
-          onClick={() => this.props.onDelete(movie)}
-        >
-          Delete
-        </button>
-      ),
+      content: auth.getCurrentUser()
+        ? (movie) => (
+            <button
+              className="btn btn-danger btn-sm"
+              onClick={() => this.props.onDelete(movie)}
+            >
+              Delete
+            </button>
+          )
+        : null,
     },
   ];
 
