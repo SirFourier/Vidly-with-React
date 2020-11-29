@@ -54,7 +54,7 @@ I have built this up to learn react. This is based on exercises and lessons by [
   - connecting to mongodb atlas database
 - Deployment
   - setting enviornment variables to set axios baseURL
-  - using mongoDB atlas to store movies and genres
+  - using mongoDB atlas to store movies, genres, and users registered
   - pushing front-end to heroku via git
   - pushing back-end to heroku via git
 
