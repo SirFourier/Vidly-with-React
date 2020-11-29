@@ -1,8 +1,62 @@
+# Link to the website
+This was deployed using heroku:
+https://sleepy-brook-10846.herokuapp.com/movies
+
+![vidly](public/vidly.gif?raw=true)
+
 # Vidly with React
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## About
-This is a project that I have slowly built up to learn react. This is based on exercises and lessons by [Code with Mosh](http://codewithmosh.com) through the mastering React course.
+## Motivation
+I have built this up to learn react. This is based on exercises and lessons by [Code with Mosh](http://codewithmosh.com) through the mastering React course.
+
+## Features and learning outcomes
+- Basic react learning outcomes
+  - real DOM and virtual DOM comparisons
+  - states in classes
+  - stateless functions
+  - passing props and children to a component
+    - destructuring arguments
+  - life cycle hooks
+    - constructor
+    - componentDidMount
+    - render
+    - unmounting
+- Navigation bar using routing and links
+  - switch and routing
+  - passing movie id using route parameters
+  - redirection to not-found page on invalid movie id
+  - redirection to login page on invalid authentication
+    - done using protected routes
+- Genre list selector
+  - filtering movies based on genre
+- Movies Table
+  - sorting movies by ascending/descending alphabetical order based on which header title is clicked
+  - search box
+  - editable movie forms
+  - pagination
+  - new movie form
+  - like button
+  - delete button for admins
+- Forms
+  - Movie form
+  - Registration form
+  - Login form
+- Services
+  - making server requests using axios
+    - error handling and using toastify to display them
+  - movies service
+  - genres service
+  - authentication service
+  - user service
+  - log service using sentry
+  - jwt tokens
+  - connecting to mongodb atlas database
+- Deployment
+  - setting enviornment variables to set axios baseURL
+  - using mongoDB atlas to store movies and genres
+  - pushing front-end to heroku via git
+  - pushing back-end to heroku via git
 
 ## Available Scripts
 
