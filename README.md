@@ -1,6 +1,7 @@
 # Link to the website
 This was deployed using heroku:
 https://sleepy-brook-10846.herokuapp.com/movies
+(May take a while to initially load database in but after that it should be fine)
 
 ![vidly](public/vidly.gif?raw=true)
 
